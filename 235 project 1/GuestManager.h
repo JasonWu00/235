@@ -18,11 +18,24 @@ class Guest {
     int getBookedDays();
     virtual int getRoomBusyDays();
     virtual int getAdditionalIncome();
-    Guest();
     Guest(GuestType guest_type, RoomType room_type, int StayDuration);
-    ~Guest();
+    virtual ~Guest();
   protected:
     RoomType room_type;
     GuestType guest_type;
     int days_booked;
+};
+
+class Family: public Guest {
+
+};
+
+class Rockstar: public Guest {
+
+};
+
+class Businessman: public Guest {
+  protected:
+   int income;
+   Businessman(GuestType guest_type, RoomType room_type, int StayDuration, int additionalIncome);
 };
