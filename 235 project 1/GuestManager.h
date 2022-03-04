@@ -17,8 +17,10 @@ class Guest {
     GuestType getGuestType();
     RoomType getRoomType();
     int getBookedDays();
+
     virtual int getRoomBusyDays() const = 0;
     virtual int getAdditionalIncome() const = 0;
+
     Guest();
     Guest(GuestType guest_type, RoomType room_type, int StayDuration);
     virtual ~Guest();
@@ -53,19 +55,26 @@ class Businessman: public Guest {
 
 class GuestManager {
   protected:
-    int NumOfStandardRooms;
+    int NumOfStandardRooms;//"available" rooms
+    int totalStandardRooms;//all rooms including occupied ones
     int dayPriceStandard;
+
     int NumOfComfortRooms;
+    int totalComfortRooms;
     int dayPriceComfort;
+
     int dayTilNextFreeStandard;//days until the next Standard guest leaves
     int dayTilNextFreeComfort;//see above, but for comfort rooms
+
     std::vector<Guest*> guests;
     int totalIncome();
   public:
     GuestManager(int NumOfStandardRooms, int dayPriceStandard, int NumOfComfortRooms, int dayPriceComfort);
     ~GuestManager();
+
     bool AddGuest(GuestType guest_type, RoomType room_type, int stayDays, int additionalIncome);
     bool IsAvailable(RoomType type, int inDays);
+
     int IncomingProfit();
     float EarningEfficiency();
     bool operator<(GuestManager otherManager);

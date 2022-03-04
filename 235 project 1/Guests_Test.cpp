@@ -17,7 +17,7 @@ int main()
 
     ///////////////////////////////////////////////////////////////////////////////
 
-    if (hotel_1.IsAvailable(RoomType::Standard, 5) != true)
+    if (hotel_1.IsAvailable(RoomType::Standard, 4) != true)
         std::cout << "TEST 2.1 ERROR: IsAvailable malfunctions" << std::endl;
 
     if (hotel_1.IsAvailable(RoomType::Comfort, 4) != false)
@@ -66,10 +66,10 @@ int main()
     
     ///////////////////////////////////////////////////////////////////////////////
 
-    if(( hotel_1 < hotel_2) != false)
+    if ((hotel_1 <hotel_2) != false)
         std::cout << "TEST 5.1 ERROR: operator< malfunctions" << std::endl;
 
-    if ((hotel_2 < hotel_3) != true)
+    if ((hotel_2 <hotel_3) != true)
         std::cout << "TEST 5.2 ERROR: operator< malfunctions" << std::endl;
 
     ///////////////////////////////////////////////////////////////////////////////

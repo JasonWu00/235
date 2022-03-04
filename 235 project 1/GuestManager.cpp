@@ -80,8 +80,10 @@ Businessman::Businessman(GuestType guest_type, RoomType room_type, int StayDurat
 
 GuestManager::GuestManager(int NumOfStandardRooms, int dayPriceStandard, int NumOfComfortRooms, int dayPriceComfort) {
     this->NumOfStandardRooms = NumOfStandardRooms;
+    this->NumOfStandardRooms = totalStandardRooms;
     this->dayPriceStandard = dayPriceStandard;
     this->NumOfComfortRooms = NumOfComfortRooms;
+    this->NumOfComfortRooms = totalComfortRooms;
     this->dayPriceComfort = dayPriceComfort;
 }
 
@@ -94,6 +96,7 @@ GuestManager::~GuestManager() {
 
 bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDays, int additionalIncome) {
     Guest *guest;
+    int actualStayDays = stayDays;//in case the guest is a rockstar
 
     if (guest_type == GuestType::Family) {
         guest = new class Family(guest_type, room_type, stayDays);
@@ -103,6 +106,7 @@ bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDa
     }
     else if (guest_type == GuestType::Rockstar) {
         guest = new class Rockstar(guest_type, room_type, stayDays);
+        actualStayDays += 10;
     }
     else {//the guest type isn't any of the known types
         return false;
@@ -111,19 +115,19 @@ bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDa
     //see if the room is available, then subtract 1
     if (room_type == RoomType::Standard && NumOfStandardRooms >= 1) {
         NumOfStandardRooms -=1;
-        if (dayTilNextFreeStandard > stayDays) {
+        if (dayTilNextFreeStandard > actualStayDays) {
             //nextFreeStandard stores the days left 
             //until the next Standard guest leaves
             //if the new guest will stay for a shorter time
             //update nextFreeStandard to match.
-            dayTilNextFreeStandard = stayDays;
+            dayTilNextFreeStandard = actualStayDays;
         }
     }
     else if (room_type == RoomType::Comfort && NumOfComfortRooms >= 1) {
         NumOfComfortRooms -= 1;
-        if (dayTilNextFreeComfort > stayDays) {
+        if (dayTilNextFreeComfort > actualStayDays) {
             //see nextFreeStandard
-            dayTilNextFreeComfort = stayDays;
+            dayTilNextFreeComfort = actualStayDays;
         }
     }
     else {//there aren't enough rooms of this type
@@ -136,7 +140,7 @@ bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDa
     return true;
 }
 
-bool GuestManager::IsAvailable(RoomType type, int inDays) {
+bool GuestManager::IsAvailable(RoomType type, int inDays = 0) {
     if (type == RoomType::Standard) {
         return (NumOfStandardRooms > 0 || dayTilNextFreeStandard < inDays);
     }
@@ -146,4 +150,34 @@ bool GuestManager::IsAvailable(RoomType type, int inDays) {
     else {//type specified is not a known type
         return false;
     }
+}
+
+//getter functions to retrieve value of standard and comfort room prices
+
+int GuestManager::IncomingProfit() {
+    int profit = 0;
+    for (Guest* guest : guests) {
+        if (guest->getRoomType() == RoomType::Standard) {
+            profit += dayPriceStandard;
+        }
+        else {//roomtype is comfort
+            profit += dayPriceComfort;
+        }
+        if (guest->getGuestType() == GuestType::Businessman) {
+            profit += guest->getAdditionalIncome();
+        }
+    }
+    return profit;
+}
+
+float GuestManager::EarningEfficiency() {
+    int current_per_day_income = IncomingProfit();
+    int max_per_day_income = dayPriceStandard * totalStandardRooms 
+                             + dayPriceComfort * totalComfortRooms;
+    float output = current_per_day_income / max_per_day_income;
+    return output;
+}
+
+bool GuestManager::operator<(GuestManager otherManager) {
+    return (IncomingProfit() < otherManager.IncomingProfit());
 }
