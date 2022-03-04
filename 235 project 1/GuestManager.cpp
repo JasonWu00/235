@@ -95,13 +95,13 @@ GuestManager::~GuestManager() {
 bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDays, int additionalIncome) {
     Guest *guest;
 
-    if (guest_type = Family) {
+    if (guest_type == GuestType::Family) {
         guest = new class Family(guest_type, room_type, stayDays);
     }
-    else if (guest_type = Businessman) {
+    else if (guest_type == GuestType::Businessman) {
         guest = new class Businessman(guest_type, room_type, stayDays, additionalIncome);
     }
-    else if (guest_type = Rockstar) {
+    else if (guest_type == GuestType::Rockstar) {
         guest = new class Rockstar(guest_type, room_type, stayDays);
     }
     else {//the guest type isn't any of the known types
@@ -109,17 +109,41 @@ bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDa
     }
     
     //see if the room is available, then subtract 1
-    if (room_type == Standard && NumOfStandardRooms >= 1) {
+    if (room_type == RoomType::Standard && NumOfStandardRooms >= 1) {
         NumOfStandardRooms -=1;
+        if (dayTilNextFreeStandard > stayDays) {
+            //nextFreeStandard stores the days left 
+            //until the next Standard guest leaves
+            //if the new guest will stay for a shorter time
+            //update nextFreeStandard to match.
+            dayTilNextFreeStandard = stayDays;
+        }
     }
-    else if (room_type == Comfort && NumOfComfortRooms >= 1) {
+    else if (room_type == RoomType::Comfort && NumOfComfortRooms >= 1) {
         NumOfComfortRooms -= 1;
+        if (dayTilNextFreeComfort > stayDays) {
+            //see nextFreeStandard
+            dayTilNextFreeComfort = stayDays;
+        }
     }
     else {//there aren't enough rooms of this type
           //or the room type isn't a known type
+        delete guest;
         return false;
     }
 
-    guests.push_back(guest);
+    guests.push_back(guest);//add guest to the vector of guests
     return true;
+}
+
+bool GuestManager::IsAvailable(RoomType type, int inDays) {
+    if (type == RoomType::Standard) {
+        return (NumOfStandardRooms > 0 || dayTilNextFreeStandard < inDays);
+    }
+    else if (type == RoomType::Comfort || dayTilNextFreeComfort < inDays) {
+        return (NumOfComfortRooms > 0);
+    }
+    else {//type specified is not a known type
+        return false;
+    }
 }

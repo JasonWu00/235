@@ -21,7 +21,7 @@ class Guest {
     virtual int getAdditionalIncome() const = 0;
     Guest();
     Guest(GuestType guest_type, RoomType room_type, int StayDuration);
-    ~Guest();
+    virtual ~Guest();
   protected:
     RoomType room_type;
     GuestType guest_type;
@@ -57,6 +57,8 @@ class GuestManager {
     int dayPriceStandard;
     int NumOfComfortRooms;
     int dayPriceComfort;
+    int dayTilNextFreeStandard;//days until the next Standard guest leaves
+    int dayTilNextFreeComfort;//see above, but for comfort rooms
     std::vector<Guest*> guests;
     int totalIncome();
   public:
