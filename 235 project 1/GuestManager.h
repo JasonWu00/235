@@ -68,20 +68,3 @@ class GuestManager {
     float EarningEfficiency();
     bool operator<(GuestManager otherManager);
 };
-
-class test {
-  public:
-    int example;
-    test();
-    test(int input);
-    virtual int random() = 0;
-    virtual int random2() = 0;
-};
-
-class test2: public test {
-  public:
-    int example2;
-    test2();
-    test2(int input, int input2);
-    int random() override;
-};

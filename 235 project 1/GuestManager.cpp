@@ -93,18 +93,33 @@ GuestManager::~GuestManager() {
 }
 
 bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDays, int additionalIncome) {
-    Guest *guest;/*
+    Guest *guest;
+
     if (guest_type = Family) {
-        guest = new Family(guest_type, room_type, stayDays);
+        guest = new class Family(guest_type, room_type, stayDays);
     }
     else if (guest_type = Businessman) {
-        guest = new Businessman(guest_type, room_type, stayDays, additionalIncome);
+        guest = new class Businessman(guest_type, room_type, stayDays, additionalIncome);
     }
     else if (guest_type = Rockstar) {
-        guest = new Rockstar(guest_type, room_type, stayDays);
+        guest = new class Rockstar(guest_type, room_type, stayDays);
     }
-    else {
+    else {//the guest type isn't any of the known types
         return false;
-    }*/
+    }
+    
+    //see if the room is available, then subtract 1
+    if (room_type == Standard && NumOfStandardRooms >= 1) {
+        NumOfStandardRooms -=1;
+    }
+    else if (room_type == Comfort && NumOfComfortRooms >= 1) {
+        NumOfComfortRooms -= 1;
+    }
+    else {//there aren't enough rooms of this type
+          //or the room type isn't a known type
+        return false;
+    }
+
+    guests.push_back(guest);
     return true;
 }

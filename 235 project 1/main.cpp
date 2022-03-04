@@ -10,7 +10,6 @@ int main() {
   GuestManager *manager2 = new GuestManager(4,5,4,6);
   delete manager2;
 
-  test2 *example4;
   Guest *test45 = new class Businessman(Businessman, Standard, 2, 4);
 
   std::vector<int> test;
