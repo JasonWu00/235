@@ -61,8 +61,10 @@ int main()
         std::cout << "TEST 4.2 ERROR: EarningEfficiency malfunctions" << std::endl;
 
     // Bonus test
-    // GuestManager hotel_4{ 0, 0, 0, 0 };
-    // hotel_4.EarningEfficiency();
+    GuestManager hotel_4{ 0, 0, 0, 0 };
+    if (hotel_4.EarningEfficiency() != 0.0) {
+        std::cout << "4.3: EarningEffiencity issue" << std::endl;
+    }
     
     ///////////////////////////////////////////////////////////////////////////////
 
