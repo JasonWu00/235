@@ -72,10 +72,11 @@ class GuestManager {
     GuestManager(int NumOfStandardRooms, int dayPriceStandard, int NumOfComfortRooms, int dayPriceComfort);
     ~GuestManager();
 
-    bool AddGuest(GuestType guest_type, RoomType room_type, int stayDays, int additionalIncome);
-    bool IsAvailable(RoomType type, int inDays);
+    bool AddGuest(GuestType guest_type, RoomType room_type, int stayDays, int additionalIncome = 0);
+    bool IsAvailable(RoomType type, int inDays = 0);
 
     int IncomingProfit();
+    int profitPerDay();
     float EarningEfficiency();
-    bool operator<(GuestManager otherManager);
+    bool operator < (GuestManager& otherManager);
 };

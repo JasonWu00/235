@@ -1,18 +1,18 @@
 #include <iostream>
 
 #include "GuestManager.h"
-//g++  -std=c++17  -Wall  Guests_Test.cpp  GuestManager.cpp  -o test
+
 int main()
 {
     GuestManager hotel_1{ 5, 10, 2, 20 };
 
-    hotel_1.AddGuest(GuestType::Family, RoomType::Standard, 5, 4); 
+    hotel_1.AddGuest(GuestType::Family, RoomType::Standard, 5); 
     hotel_1.AddGuest(GuestType::Businessman, RoomType::Comfort, 3, 4); 
     
-    if (hotel_1.AddGuest(GuestType::Rockstar, RoomType::Comfort, 2, 4) != true)
+    if (hotel_1.AddGuest(GuestType::Rockstar, RoomType::Comfort, 2) != true)
         std::cout << "TEST 1.1 ERROR: AddGuest malfunctions" << std::endl;
 
-    if (hotel_1.AddGuest(GuestType::Rockstar, RoomType::Comfort, 15, 4) != false)
+    if (hotel_1.AddGuest(GuestType::Rockstar, RoomType::Comfort, 15) != false)
         std::cout << "TEST 1.2 ERROR: AddGuest malfunctions" << std::endl;
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -38,16 +38,16 @@ int main()
         std::cout << "TEST 3.1 ERROR: IncomingProfit malfunctions" << std::endl;
 
     GuestManager hotel_2{ 10, 5, 0, 0 };
-    hotel_2.AddGuest(GuestType::Family, RoomType::Standard, 2, 4);
-    hotel_2.AddGuest(GuestType::Family, RoomType::Standard, 2, 4);
-    hotel_2.AddGuest(GuestType::Family, RoomType::Standard, 2, 4);
+    hotel_2.AddGuest(GuestType::Family, RoomType::Standard, 2);
+    hotel_2.AddGuest(GuestType::Family, RoomType::Standard, 2);
+    hotel_2.AddGuest(GuestType::Family, RoomType::Standard, 2);
     hotel_2.AddGuest(GuestType::Businessman, RoomType::Standard, 1, 5);
 
     if (hotel_2.IncomingProfit() != 40)
         std::cout << "TEST 3.2 ERROR: IncomingProfit malfunctions" << std::endl;
 
     GuestManager hotel_3{ 0, 0, 10, 20 };
-    hotel_3.AddGuest(GuestType::Rockstar, RoomType::Comfort, 10, 4);
+    hotel_3.AddGuest(GuestType::Rockstar, RoomType::Comfort, 10);
 
     if (hotel_3.IncomingProfit() != 200)
         std::cout << "TEST 3.3 ERROR: IncomingProfit malfunctions" << std::endl;
@@ -68,17 +68,16 @@ int main()
 
     if ((hotel_1 < hotel_2) != false)
         std::cout << "TEST 5.1 ERROR: operator< malfunctions" << std::endl;
-
+    //std::cout << "5.1 called" << std::endl;
     if ((hotel_2 < hotel_3) != true)
         std::cout << "TEST 5.2 ERROR: operator< malfunctions" << std::endl;
-
+    //std::cout << "5.2 called" << std::endl;
+    //std::cout << "End of the operator tests" << std::endl;
     ///////////////////////////////////////////////////////////////////////////////
 
     std::cout << "^^^^^^^^^^^^ Any found problems should appear above this line ^^^^^^^^^^^^" << std::endl;
 
-    // hotel_1.~GuestManager();
-    // hotel_2.~GuestManager();
-    // hotel_3.~GuestManager();
+    //std::cout << "End of testing file" << std::endl;
 
     return 0;
 }
