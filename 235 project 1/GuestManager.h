@@ -76,7 +76,7 @@ class GuestManager {
     bool IsAvailable(RoomType type, int inDays = 0);
 
     int IncomingProfit();
-    int profitPerDay();
-    float EarningEfficiency();
+    int profitPerDay() const;
+    float EarningEfficiency() const;
     bool operator < (GuestManager& otherManager);
 };

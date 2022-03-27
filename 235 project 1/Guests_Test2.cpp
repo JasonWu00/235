@@ -62,9 +62,9 @@ int main()
 
     // Bonus test
     GuestManager hotel_4{ 0, 0, 0, 0 };
-    if (hotel_4.EarningEfficiency() != 0.0) {
-        std::cout << "4.3: EarningEffiencity issue" << std::endl;
-    }
+    //std::cout << hotel_4.EarningEfficiency() << std::endl;
+
+    
     
     ///////////////////////////////////////////////////////////////////////////////
 

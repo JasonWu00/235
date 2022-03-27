@@ -33,6 +33,8 @@ Guest::~Guest() {
 
 }
 
+//implemented constructors needed to make the two classes not abstract
+
 Rockstar::Rockstar(GuestType guest_type, RoomType room_type, int StayDuration)
 : Guest(guest_type, room_type, StayDuration) {
 
@@ -90,6 +92,7 @@ GuestManager::GuestManager(int NumOfStandardRooms, int dayPriceStandard, int Num
 GuestManager::~GuestManager() {
     for (Guest* pointer : guests) {
         delete pointer;
+        pointer = nullptr;
         //std::cout << "Deleted pointer" << std::endl;
     }
     //std::cout << "GuestManager cleared out" << std::endl;
@@ -117,24 +120,34 @@ bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDa
         return false;
     }
     
-    //see if the room is available, then subtract 1
-    if (room_type == RoomType::Standard && NumOfStandardRooms >= 1) {
-        NumOfStandardRooms -=1;
-        //std::cout << "Standard room assigned" << std::endl;
-        if (dayTilNextFreeStandard > actualStayDays) {
-            //nextFreeStandard stores the days left 
-            //until the next Standard guest leaves
-            //if the new guest will stay for a shorter time
-            //update nextFreeStandard to match.
-            dayTilNextFreeStandard = actualStayDays;
-        }
+    if (stayDays < 0) {
+        //You can't stay for a negative number of days.
+        delete guest;
+        return false;
     }
-    else if (room_type == RoomType::Comfort && NumOfComfortRooms >= 1) {
-        NumOfComfortRooms -= 1;
-        //std::cout << "Comfort room assigned" << std::endl;
-        if (dayTilNextFreeComfort > actualStayDays) {
-            //see nextFreeStandard
-            dayTilNextFreeComfort = actualStayDays;
+    
+    //see if the room is available, then subtract 1
+    if (IsAvailable(room_type)) {
+        if (room_type == RoomType::Standard) {
+            //std::cout << "Standard room assigned" << std::endl;
+            NumOfStandardRooms -=1;
+
+            if (dayTilNextFreeStandard > actualStayDays) {
+                //nextFreeStandard stores the days left 
+                //until the next Standard guest leaves
+                //if the new guest will stay for a shorter time
+                //update nextFreeStandard to match.
+                dayTilNextFreeStandard = actualStayDays;
+            }
+        }
+        else {
+            //std::cout << "Comfort room assigned" << std::endl;
+            NumOfComfortRooms -= 1;
+
+            if (dayTilNextFreeComfort > actualStayDays) {
+                //see nextFreeStandard
+                dayTilNextFreeComfort = actualStayDays;
+            }
         }
     }
     else {//there aren't enough rooms of this type
@@ -150,7 +163,11 @@ bool GuestManager::AddGuest(GuestType guest_type, RoomType room_type, int stayDa
 }
 
 bool GuestManager::IsAvailable(RoomType type, int inDays) {
-    if (type == RoomType::Standard) {
+    if (NumOfStandardRooms < 0 || NumOfComfortRooms < 0) {
+        return false;
+        //if you have a negative number of rooms open, you have bigger problems to worry about.
+    }
+    else if (type == RoomType::Standard) {
         // std::cout << "A Standard room may be available" << std::endl;
         // std::cout << "Standard rooms left: " << NumOfStandardRooms << std::endl;
         // std::cout << "Room available in " << dayTilNextFreeStandard << " days" << std::endl;
@@ -189,7 +206,7 @@ int GuestManager::IncomingProfit() {
     return profit;
 }
 
-int GuestManager::profitPerDay() {//helper function for EarningEfficiency
+int GuestManager::profitPerDay() const {//helper function for EarningEfficiency
     int profit = 0;
     for (Guest* guest : guests) {
         if (guest->getRoomType() == RoomType::Standard) {
@@ -198,21 +215,22 @@ int GuestManager::profitPerDay() {//helper function for EarningEfficiency
         else {//roomtype is comfort
             profit += dayPriceComfort;
         }
-        if (guest->getGuestType() == GuestType::Businessman) {
-            profit += guest->getAdditionalIncome();
-        }
+        profit += guest->getAdditionalIncome();
     }
     return profit;
 }
 
-float GuestManager::EarningEfficiency() {
+float GuestManager::EarningEfficiency() const{
     int current_per_day_income = profitPerDay();
     float max_per_day_income = dayPriceStandard * totalStandardRooms 
                              + dayPriceComfort * totalComfortRooms;
     //std::cout << "Current income/day: " << current_per_day_income << std::endl;
     //std::cout << "Max possible income/day: " << max_per_day_income << std::endl;
-    float output = current_per_day_income / max_per_day_income;
     //std::cout << "Output is: " << output << std::endl;
+    float output = -1;
+    if (max_per_day_income != 0.0) { //to prevent division by 0
+        output = current_per_day_income / max_per_day_income;
+    }
     return output;
 }
 
