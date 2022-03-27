@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
 
-class parser {
+class Parser {
 	public:
-		parser();
-		parser(std::vector<char> separators);
-		std::vector<std::string> readInput(std::string input);
+		Parser();
+		Parser(std::vector<char> separators);
+		std::vector<std::string> readInput(std::string input, char priorityDelimiter);
 		bool charInList(char c) const;
+		bool charInList(char c, char priorityDelimiter) const;
 
 	protected:
 		std::vector<char> separators;
@@ -25,24 +26,38 @@ class inputManager {
 		~inputManager();
 
 	protected:
-		std::vector<std::vector<std::string>> records;
+		std::vector<Student*> records;
 		//a vector containing lesser vectors representing students
 		diskManager* privateDiskMan;
 		//the disk manager is available to the input manager
 		//but not to the user
-		parser* privateParser;
+		Parser* privateParser;
 };
 
 class diskManager {
 	public:
 		diskManager(std::string userGivenFileName);
-		bool getRecords(std::vector<std::vector<std::string>> &records); 
+		bool getRecords(std::vector<Student*> &records); 
 		//reads from file and writes data into records
-		bool writeRecords(std::vector<std::vector<std::string>> &records); 
+		bool writeRecords(std::vector<Student*> &records); 
 		//takes records and writes daya into file
 		~diskManager();
 
 	protected:
 		std::string storageFileName;
-		parser* privateParser;
+		Parser* privateParser;
+};
+
+class Student {
+	public: 
+		Student(int id, std::string name, int age);
+		int getID() const;
+		std::string getName() const;
+		int getAge() const;
+
+	protected:
+		int id;
+		std::string name;
+		int age;
+
 };
