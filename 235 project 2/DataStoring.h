@@ -5,12 +5,14 @@ class Parser {
 	public:
 		Parser();
 		Parser(std::vector<char> separators);
-		std::vector<std::string> readInput(std::string input, char priorityDelimiter);
-		bool charInList(char c) const;
-		bool charInList(char c, char priorityDelimiter) const;
+		std::vector<std::string> readInput(std::string input);
+		bool charInSeparator(char c) const;
+		bool charInOperator(char c) const;
+		//bool charInSeparator(char c, char priorityDelimiter) const;
 
 	protected:
 		std::vector<char> separators;
+		std::vector<char> operators;
 };
 
 class inputManager {
@@ -19,9 +21,9 @@ class inputManager {
 		bool processRequest(std::vector<std::string> input);
 		//figures out what kind of a command it is, then invokes
 		//one of the four functions below
-		bool addStudent(int id, std::string first, std::string last, int age);
-		bool findCondition(std::string condition);
-		bool removeCondition(std::string condition);
+		bool addStudent(int student_id, std::string name, int age);
+		bool findCondition(std::vector<std::string> condition);
+		bool removeCondition(std::vector<std::string> condition);
 		bool stop();
 		~inputManager();
 
@@ -50,14 +52,14 @@ class diskManager {
 
 class Student {
 	public: 
-		Student(int id, std::string name, int age);
-		int getID() const;
+		Student(unsigned int id, std::string name, unsigned short age);
+		unsigned int getID() const;
 		std::string getName() const;
-		int getAge() const;
+		unsigned short getAge() const;
 
 	protected:
-		int id;
+		unsigned int student_id;
 		std::string name;
-		int age;
+		unsigned short age;
 
 };
