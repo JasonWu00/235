@@ -5,20 +5,6 @@
 #include <string>
 #include "Parser.h"
 
-class DiskManager {
-	public:
-		DiskManager(std::string userGivenFileName);
-		bool getRecords(std::vector<Student*> &records); 
-		//reads from file and writes data into records
-		bool writeRecords(std::vector<Student*> &records); 
-		//takes records and writes daya into file
-		~DiskManager();
-
-	protected:
-		std::string storageFileName;
-		Parser privateParser;
-};
-
 class Student {
 	public: 
 		Student(unsigned int id, std::string name, unsigned short age);
@@ -31,4 +17,18 @@ class Student {
 		std::string name;
 		unsigned short age;
 
+};
+
+class DiskManager {
+	public:
+		DiskManager(std::string userGivenFileName);
+		bool getRecords(std::vector<Student*> &records); 
+		//reads from file and writes data into records
+		bool writeRecords(std::vector<Student*> &records); 
+		//takes records and writes daya into file
+		~DiskManager();
+
+	protected:
+		std::string storageFileName;
+		Parser privateParser;
 };

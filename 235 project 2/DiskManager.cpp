@@ -10,7 +10,12 @@ DiskManager::DiskManager(std::string userGivenFileName) {
     //privateParser = new Parser();
 }
 
+DiskManager::~DiskManager() {
+    //covers an issue with "undefined reference to ~DiskManager()"
+}
+
 bool DiskManager::getRecords(std::vector<Student*> &records) {
+    //std::cout << "Start getting records" << std::endl;
     std::ifstream readRecords(storageFileName);
     //create a read stream leading to said file
 
@@ -19,10 +24,12 @@ bool DiskManager::getRecords(std::vector<Student*> &records) {
         std::cout << "The file cannot be opened" << std::endl;
         return false;
     }
+    //std::cout << "Success in opening file" << std::endl;
 
     std::string rawData;
     //holds info on one student at a time
     while (getline(readRecords, rawData)) {
+        //std::cout << "Getting line" << std::endl;
         //grab each line (each representing 1 student) at a time
         std::vector<std::string> parsedData = privateParser(rawData);
         //parsedData now holds several strings describing the student
@@ -33,6 +40,7 @@ bool DiskManager::getRecords(std::vector<Student*> &records) {
         //put pointer in vector
         records.push_back(student);
     }
+    std::cout << "All data parsed" << std::endl;
     readRecords.close();
     return true;
 }

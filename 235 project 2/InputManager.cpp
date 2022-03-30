@@ -6,8 +6,11 @@
 //functions for InputManager class
 
 InputManager::InputManager() {
+    //std::cout << "Making a manager" << std::endl;
     privateDiskMan = new DiskManager("student_data.txt");
+    //std::cout << "diskMan made" << std::endl;
     privateDiskMan->getRecords(records);
+    //std::cout << "Records got" << std::endl;
     //the disk man will parse the content of the file into
     //the student record vector once it is created.
     //privateParser = new Parser();
@@ -33,7 +36,7 @@ RequestState InputManager::processRequest(std::vector<std::string> input) {
     else if (input[0] == "ADD") {
         if (! isNum(input[1]) || ! isNum(input[3])) {
             //id and age should be numbers
-            return RequestState::BadFormat;
+            return RequestState::BadFormat_IdAge;
             //no need for an else statement, return exits function
         }
         addStudent(stoi(input[1]), input[2], stoi(input[3]));
@@ -48,7 +51,7 @@ RequestState InputManager::processRequest(std::vector<std::string> input) {
     }
     else {
         //input[0] is not a recognized command
-        return RequestState::BadFormat;
+        return RequestState::BadFormat_Command;
     }
 }
 

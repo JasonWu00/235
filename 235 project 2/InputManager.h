@@ -7,6 +7,8 @@
 enum RequestState {
 	AllIsWell,
 	BadFormat,
+	BadFormat_IdAge,
+	BadFormat_Command,
 	Exit
 };
 

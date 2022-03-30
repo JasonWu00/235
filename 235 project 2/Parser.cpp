@@ -71,8 +71,9 @@ std::vector<std::string> Parser::operator()(std::string input) {
         //push string to output when separator detected
         if (c == '\"') {
             quotationCounter++;
-            if (quotationCounter % 2 == 0) {
+            if (quotationCounter % 2 == 0 && parsedString[parsedString.length()] != '\"') {
                 //covers an issue where closing parentheses are sometimes skipped
+                //and an issue where sometimes it will put 2 quotations at start or end
                 parsedString += c;
             }
             //std::cout << "DEBUG quotation found" << std::endl;
@@ -81,10 +82,10 @@ std::vector<std::string> Parser::operator()(std::string input) {
         }
         if (charInSeparator(c) && quotationCounter % 2 == 0) {
             //seperator char found, no open quotation marks
-            //std::cout << "counter = " << quotationCounter << std::endl;
-            if (parsedString != "" && parsedString != " ") {
-                //std::cout << "DEBUG pushing string \"" << parsedString << "\" into vector" << std::endl;
-                //covers an issue where sometimes parsedString gets pushed with value " "
+            //std::cout << "quote counter = " << quotationCounter << std::endl;
+            if (parsedString != "" && parsedString != " " && parsedString != "\"") {
+                //std::cout << "DEBUG pushing string \" " << parsedString << " \" into vector" << std::endl;
+                //covers an issue where sometimes parsedString gets pushed with value " " or "\""
                 output.push_back(parsedString);
             }
             
@@ -96,14 +97,16 @@ std::vector<std::string> Parser::operator()(std::string input) {
             //add to parsedString
             //std::cout << "DEBUG expanding parsedString" << std::endl;
             parsedString += c;
+            //std::cout << "DEBUG string value is: " << parsedString << std::endl;
         }
         //std::cout << "DEBUG end loop" << std::endl;
     }
     if (parsedString != "" && parsedString != " ") {
-        //std::cout << "DEBUG pushing string \"" << parsedString << "\" into vector" << std::endl;
+        //std::cout << "DEBUG pushing string \" " << parsedString << " \" into vector" << std::endl;
         //covers an issue where sometimes parsedString gets pushed with value " "
         output.push_back(parsedString);
     }
+    //std::cout << "DEBUG end of for loop" << std::endl;
     //push last bit of data into output
 
     //the output should not be longer than 3 or 4 strings long
