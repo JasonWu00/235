@@ -4,20 +4,28 @@
 //#include "Parser.h"
 //#include "DiskManager.h"
 
+/*
 void returnErrorMessage(RequestState state) {
     if (state == RequestState::BadFormat) {
-        std::cout << "Entry incorrectly formatted." << std::endl;
+        std::cout << "Entry incorrectly formatted" << std::endl;
     }
-    else if (state == RequestState::BadFormat_Command) {
-        std::cout << "Your command is incorrectly formatted (not ADD, FIND, REMOVE, or STOP)." << std::endl;
+    else if (state == RequestState::BadFormatCommand) {
+        std::cout << "Command is incorrectly formatted (not ADD, FIND, REMOVE, or STOP)" << std::endl;
     }
-    else if (state == RequestState::BadFormat_IdAge) {
-        std::cout << "ID or Age is incorrectly formatted (not an int)." << std::endl;
+    else if (state == RequestState::BadFormatIdAgeName) {
+        std::cout << "ID, Age, or Name is incorrectly formatted " << std::endl;
+        std::cout << "(ID/Age not int or overflow or Name has too many quotes)" << std::endl;
+    }
+    else if (state == RequestState::BadFormatCondition) {
+        std::cout << "Condition is incorrectly formatted" << std::endl;
+        std::cout << "(missing or wrong condition operator or non-int age or id)" << std::endl;
     }
     else if (state == RequestState::Exit) {
-        std::cout << "Saving your progress and exiting the program now." << std::endl;
+        std::cout << "Saving your progress and exiting the program now" << std::endl;
     }
-}
+}*/
+//functionality for returning error messages
+//not implemented due to project requirements
 
 int main() {
     InputManager engine;
@@ -38,10 +46,10 @@ int main() {
         //main code goes here
         getline(std::cin, input);
         stopNow = engine.processRequest(parser(input));
-        returnErrorMessage(stopNow);
+        //returnErrorMessage(stopNow);
     }
-
-    /*std::cout << "DEBUG mode" << std::endl;
+    /*
+    std::cout << "DEBUG mode" << std::endl;
     
     int i = 0;
     while (i == 0) {

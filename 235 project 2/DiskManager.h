@@ -11,9 +11,10 @@ class Student {
 		unsigned int getID() const;
 		std::string getName() const;
 		unsigned short getAge() const;
+		std::string toString() const;
 
 	protected:
-		unsigned int student_id;
+		unsigned int studentId;
 		std::string name;
 		unsigned short age;
 

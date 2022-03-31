@@ -61,7 +61,9 @@ bool Parser::charInSeparator(char c, char priorityDelimiter) const {
     return false;
 }*/
 
-std::vector<std::string> Parser::operator()(std::string input) {
+std::vector<std::string> Parser::operator()(std::string input, int state) const {
+    //state = 0 -> use charInSeparator()
+    //state = 1 -> use charInOperator();
     std::vector<std::string> output;
     std::string parsedString = "";
     int quotationCounter = 0;
@@ -71,6 +73,7 @@ std::vector<std::string> Parser::operator()(std::string input) {
         //push string to output when separator detected
         bool quoteAlreadyAdded = false;
         //covers an issue where a quotation mark gets added twice
+
         if (c == '\"') {
             //std::cout << "DEBUG quotation found" << std::endl;
             quotationCounter++;
@@ -85,18 +88,27 @@ std::vector<std::string> Parser::operator()(std::string input) {
             //if there is an open quotation mark (counter is odd)
             //ignore separator and add it 
         }
-        if (charInSeparator(c) && quotationCounter % 2 == 0) {
+
+        bool charShouldBeRemoved;
+        if (state) {//state == 1, use charInOperator()
+            charShouldBeRemoved = charInOperator(c);
+        }
+        else {//state == 0, use charInSeparator()
+            charShouldBeRemoved = charInSeparator(c);
+        }
+
+        if (charShouldBeRemoved && quotationCounter % 2 == 0) {
             //seperator char found, no open quotation marks
             //std::cout << "DEBUG quote count: " << quotationCounter << std::endl;
             if (parsedString != "" && parsedString != " " && parsedString != "\"") {
                 //std::cout << "DEBUG pushing string |" << parsedString << "| into vector" << std::endl;
                 //covers an issue where sometimes parsedString gets pushed with value " " or "\""
                 output.push_back(parsedString);
+                parsedString = "";
+                //reset string to clear out old data
             }
-            
-            parsedString = "";
-            //reset string to clear out old data
         }
+
         else if (! quoteAlreadyAdded){
             //not seperator or open quotation mark
             //or closing quotation has already been added
@@ -107,14 +119,21 @@ std::vector<std::string> Parser::operator()(std::string input) {
         }
         //std::cout << "DEBUG end loop" << std::endl;
     }
+
     if (parsedString != "" && parsedString != " " && parsedString != "\"") {
         //std::cout << "DEBUG pushing string |" << parsedString << "| into vector" << std::endl;
         //covers an issue where sometimes parsedString gets pushed with value " "
         output.push_back(parsedString);
+        //push last bit of data into output
     }
-    //std::cout << "DEBUG end of for loop" << std::endl;
-    //push last bit of data into output
 
+    //std::cout << "DEBUG end of for loop" << std::endl;
+
+    if (quotationCounter >= 3 || quotationCounter == 1) {
+        //names should have 0 or 2 quotation marks
+        //otherwise it is an incorrect input
+        output[2] = "BAD_NAME_FORMAT";
+    }
     //the output should not be longer than 3 or 4 strings long
     //so we will pass by value
     return output;

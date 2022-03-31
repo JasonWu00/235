@@ -6,23 +6,30 @@
 
 enum RequestState {
 	AllIsWell,
+	Match,
+	NoMatch,
 	BadFormat,
-	BadFormat_IdAge,
-	BadFormat_Command,
+	BadFormatIdAgeName,
+	BadFormatCommand,
+	BadFormatCondition,
 	Exit
 };
+//reports on if user input has errors or not
 
 class InputManager {
 	public:
 		InputManager();
 		RequestState processRequest(std::vector<std::string> input);
 		//figures out what kind of a command it is, then invokes
-		//one of the four functions below
-		RequestState addStudent(int student_id, std::string name, int age);
-		bool isNum(std::string input);
-		RequestState findCondition(std::string condition);
+		//one of the three functions below
+		RequestState addStudent(long studentId, std::string name, int age);
+		RequestState findCondition(std::string condition) const;
 		RequestState removeCondition(std::string condition);
-		bool stop();
+		//helper
+		RequestState fitsCondition(std::string condition, Student* student) const;
+
+		bool isNum(std::string input) const;
+		//helper
 		~InputManager();
 
 	protected:

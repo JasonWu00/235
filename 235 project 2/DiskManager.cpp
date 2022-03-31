@@ -40,7 +40,7 @@ bool DiskManager::getRecords(std::vector<Student*> &records) {
         //put pointer in vector
         records.push_back(student);
     }
-    std::cout << "All data parsed" << std::endl;
+    //std::cout << "All data parsed" << std::endl;
     readRecords.close();
     return true;
 }
@@ -78,8 +78,8 @@ DiskManager::~DiskManager() {
 
 //functions for Student class
 
-Student::Student(unsigned int student_id, std::string name, unsigned short age) {
-    this->student_id = student_id;
+Student::Student(unsigned int studentId, std::string name, unsigned short age) {
+    this->studentId = studentId;
     this->name = name;
     this->age = age;
 }
@@ -90,7 +90,7 @@ Student::Student(unsigned int student_id, std::string name, unsigned short age) 
 //getters
 
 unsigned int Student::getID() const {
-    return student_id;
+    return studentId;
 }
 
 std::string Student::getName() const {
@@ -99,4 +99,31 @@ std::string Student::getName() const {
 
 unsigned short Student::getAge() const {
     return age;
+}
+
+std::string Student::toString() const {
+    std::string output = "";
+
+    std::string id = "";//no more than 10 chars long since unsigned int limit is 10 digits long
+    id += std::to_string(getID());
+    int length = id.length();
+    for (int i = 0; i < 10 - length; i++) {
+        id += " ";
+    }
+
+    std::string name;
+    for (char c : getName()) {
+        if (c != '\"') {//removes quotation marks
+            name += c;
+        }
+    }
+
+    std::string age = std::to_string(getAge());
+
+    output += id;
+    output += " | ";
+    output += name;
+    output += " | ";
+    output += age;
+    return output;
 }
