@@ -69,22 +69,27 @@ std::vector<std::string> Parser::operator()(std::string input) {
     for (char c : input) {
         //parse chars not in the separators list into a temp string
         //push string to output when separator detected
+        bool quoteAlreadyAdded = false;
+        //covers an issue where a quotation mark gets added twice
         if (c == '\"') {
-            quotationCounter++;
-            if (quotationCounter % 2 == 0 && parsedString[parsedString.length()] != '\"') {
-                //covers an issue where closing parentheses are sometimes skipped
-                //and an issue where sometimes it will put 2 quotations at start or end
-                parsedString += c;
-            }
             //std::cout << "DEBUG quotation found" << std::endl;
+            quotationCounter++;
+            //std::cout << "DEBUG quote count: " << quotationCounter << std::endl;
+            if (quotationCounter % 2 == 0 && parsedString[parsedString.length()] != '\"') {
+                //if this is a closing quote and there isn't a quote right before that
+                //add char to string
+                //std::cout << "DEBUG closing quotations and no quotation before this" << std::endl;
+                parsedString += c;
+                quoteAlreadyAdded = true;
+            }
             //if there is an open quotation mark (counter is odd)
             //ignore separator and add it 
         }
         if (charInSeparator(c) && quotationCounter % 2 == 0) {
             //seperator char found, no open quotation marks
-            //std::cout << "quote counter = " << quotationCounter << std::endl;
+            //std::cout << "DEBUG quote count: " << quotationCounter << std::endl;
             if (parsedString != "" && parsedString != " " && parsedString != "\"") {
-                //std::cout << "DEBUG pushing string \" " << parsedString << " \" into vector" << std::endl;
+                //std::cout << "DEBUG pushing string |" << parsedString << "| into vector" << std::endl;
                 //covers an issue where sometimes parsedString gets pushed with value " " or "\""
                 output.push_back(parsedString);
             }
@@ -92,17 +97,18 @@ std::vector<std::string> Parser::operator()(std::string input) {
             parsedString = "";
             //reset string to clear out old data
         }
-        else {
+        else if (! quoteAlreadyAdded){
             //not seperator or open quotation mark
+            //or closing quotation has already been added
             //add to parsedString
             //std::cout << "DEBUG expanding parsedString" << std::endl;
             parsedString += c;
-            //std::cout << "DEBUG string value is: " << parsedString << std::endl;
+            //std::cout << "DEBUG string value is: |" << parsedString << "|" << std::endl;
         }
         //std::cout << "DEBUG end loop" << std::endl;
     }
-    if (parsedString != "" && parsedString != " ") {
-        //std::cout << "DEBUG pushing string \" " << parsedString << " \" into vector" << std::endl;
+    if (parsedString != "" && parsedString != " " && parsedString != "\"") {
+        //std::cout << "DEBUG pushing string |" << parsedString << "| into vector" << std::endl;
         //covers an issue where sometimes parsedString gets pushed with value " "
         output.push_back(parsedString);
     }
