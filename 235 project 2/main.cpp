@@ -35,11 +35,11 @@ int main() {
     std::string input;
     RequestState stopNow = RequestState::AllIsWell;
 
-    std::cout << std::endl;
-    std::cout << "This is a program for storing and modifying student data." << std::endl;
-    std::cout << "Force exiting this program may result in your progress being lost." << std::endl;
-    std::cout << "The program is ready for use. Enter your commands below." << std::endl;
-    std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << "This is a program for storing and modifying student data." << std::endl;
+    // std::cout << "Force exiting this program may result in your progress being lost." << std::endl;
+    // std::cout << "The program is ready for use. Enter your commands below." << std::endl;
+    // std::cout << std::endl;
 
     
     while (stopNow != RequestState::Exit) {

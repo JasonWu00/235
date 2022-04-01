@@ -31,6 +31,10 @@ InputManager::~InputManager() {
 RequestState InputManager::processRequest(std::vector<std::string> input) {
     //input[0] tells if it is add, find, remove, or stop
     //returns an appropriate RequestState enum indicating exit status
+    if (input.empty()) {
+        //input empty, nonsensical request
+        return RequestState::BadFormat;
+    }
 
     std::string order = input[0];
     /*for (char c : input[0]) {
