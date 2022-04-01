@@ -4,7 +4,7 @@
 //#include "Parser.h"
 //#include "DiskManager.h"
 
-/*
+
 void returnErrorMessage(RequestState state) {
     if (state == RequestState::BadFormat) {
         std::cout << "Entry incorrectly formatted" << std::endl;
@@ -20,10 +20,14 @@ void returnErrorMessage(RequestState state) {
         std::cout << "Condition is incorrectly formatted" << std::endl;
         std::cout << "(missing or wrong condition operator or non-int age or id)" << std::endl;
     }
+    else if (state == RequestState::BadFormatMissingArgs) {
+        std::cout << "Cmmand is incorrectly formatted" << std::endl;
+        std::cout << "(too few entries)" << std::endl;
+    }
     else if (state == RequestState::Exit) {
         std::cout << "Saving your progress and exiting the program now" << std::endl;
     }
-}*/
+}
 //functionality for returning error messages
 //not implemented due to project requirements
 
@@ -46,7 +50,7 @@ int main() {
         //main code goes here
         getline(std::cin, input);
         stopNow = engine.processRequest(parser(input));
-        //returnErrorMessage(stopNow);
+        returnErrorMessage(stopNow);
     }
     /*
     std::cout << "DEBUG mode" << std::endl;

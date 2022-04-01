@@ -9,6 +9,7 @@ enum RequestState {
 	Match,
 	NoMatch,
 	BadFormat,
+	BadFormatMissingArgs,
 	BadFormatIdAgeName,
 	BadFormatCommand,
 	BadFormatCondition,

@@ -33,7 +33,7 @@ RequestState InputManager::processRequest(std::vector<std::string> input) {
     //returns an appropriate RequestState enum indicating exit status
     if (input.empty()) {
         //input empty, nonsensical request
-        return RequestState::BadFormat;
+        return RequestState::BadFormatMissingArgs;
     }
 
     std::string order = input[0];
@@ -47,7 +47,9 @@ RequestState InputManager::processRequest(std::vector<std::string> input) {
 
     std::string sanitizedInput = "";
     for (int i = 1; i < input.size(); i++) {
-        sanitizedInput += input[i];
+        if (i < input.size()) {
+            sanitizedInput += input[i];
+        }
         //to cover for cases where the condition section is inconsistently spaced
         //e.g. "id > 4", "id> 4", "id >4", "id>4"
         //this will compact them all into "id>4"
@@ -57,7 +59,10 @@ RequestState InputManager::processRequest(std::vector<std::string> input) {
         return RequestState::Exit;
     }
     else if (order == "ADD") {
-        if (! isNum(input[1]) || ! isNum(input[3]) || input[2] == "BAD_NAME_FORMAT") {
+        if (input.size() < 4) {
+            return RequestState::BadFormatMissingArgs;
+        }
+        else if (! isNum(input[1]) || ! isNum(input[3]) || input[2] == "BAD_NAME_FORMAT") {
             //id and age should be numbers
             return RequestState::BadFormatIdAgeName;
             //no need for an else statement, return exits function
@@ -120,6 +125,10 @@ RequestState InputManager::fitsCondition(std::string condition, Student* student
     //pC[0] refers to the field (id, age, name)
     //pc[1] is either <, >, or =
     //pc[2] is an int of some sort or a string
+    if (parsedCondition.size() < 2) {
+        //not enough inputs
+        return RequestState::BadFormatMissingArgs;
+    }
 
     std::string field = parsedCondition[0];
     /*
