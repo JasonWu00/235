@@ -14,15 +14,19 @@ void returnErrorMessage(RequestState state) {
     }
     else if (state == RequestState::BadFormatIdAgeName) {
         std::cout << "ID, Age, or Name is incorrectly formatted " << std::endl;
-        std::cout << "(ID/Age not int or overflow or Name has too many quotes)" << std::endl;
+        std::cout << "(ID/Age not int or Name has too many quotes)" << std::endl;
     }
     else if (state == RequestState::BadFormatCondition) {
         std::cout << "Condition is incorrectly formatted" << std::endl;
         std::cout << "(missing or wrong condition operator or non-int age or id)" << std::endl;
     }
     else if (state == RequestState::BadFormatMissingArgs) {
-        std::cout << "Cmmand is incorrectly formatted" << std::endl;
+        std::cout << "Command is incorrectly formatted" << std::endl;
         std::cout << "(too few entries)" << std::endl;
+    }
+    else if (state == RequestState::BadFormatOverflow) {
+        std::cout << "ID, Age, or Name is incorrectly formatted " << std::endl;
+        std::cout << "(ID/Age values cause overflow)" << std::endl;
     }
     else if (state == RequestState::Exit) {
         std::cout << "Saving your progress and exiting the program now" << std::endl;

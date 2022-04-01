@@ -10,6 +10,7 @@ enum RequestState {
 	NoMatch,
 	BadFormat,
 	BadFormatMissingArgs,
+	BadFormatOverflow,
 	BadFormatIdAgeName,
 	BadFormatCommand,
 	BadFormatCondition,

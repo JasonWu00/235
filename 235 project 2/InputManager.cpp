@@ -95,10 +95,10 @@ bool InputManager::isNum(std::string input) const {
 
 RequestState InputManager::addStudent(long studentId, std::string name, int age) {
     if (studentId > UINT_MAX || studentId < 0) {
-        return RequestState::BadFormatIdAgeName;
+        return RequestState::BadFormatOverflow;
     }
     else if (age > USHRT_MAX || age < 0) {
-        return RequestState::BadFormatIdAgeName;
+        return RequestState::BadFormatOverflow;
     }
     Student* student = new Student(studentId, name, age);
     records.push_back(student);
