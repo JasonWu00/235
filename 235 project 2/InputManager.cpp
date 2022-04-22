@@ -67,8 +67,8 @@ RequestState InputManager::processRequest(std::vector<std::string> input) {
             return RequestState::BadFormatIdAgeName;
             //no need for an else statement, return exits function
         }
-        addStudent(stoi(input[1]), input[2], stoi(input[3]));
-        return RequestState::AllIsWell;
+        RequestState studentAdded = addStudent(stoi(input[1]), input[2], stoi(input[3]));
+        return studentAdded;
     }
     else if (order == "FIND") {
         //input[1] is the condition

@@ -25,7 +25,7 @@ void returnErrorMessage(RequestState state) {
         std::cout << "(too few entries)" << std::endl;
     }
     else if (state == RequestState::BadFormatOverflow) {
-        std::cout << "ID, Age, or Name is incorrectly formatted " << std::endl;
+        std::cout << "ID or Age is incorrectly formatted " << std::endl;
         std::cout << "(ID/Age values cause overflow)" << std::endl;
     }
     else if (state == RequestState::Exit) {
