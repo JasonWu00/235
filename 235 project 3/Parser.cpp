@@ -3,11 +3,14 @@
 //#include <iostream>
 
 //functions for Parser class
+//Code taken from 235 project 2
 
 Parser::Parser() {
     separators.push_back('\"');
     separators.push_back(' ');
     separators.push_back('\t');
+    separators.push_back('\r');
+    separators.push_back('\n');
     //operators vector holds some conditional operators
     //=, <, >
     operators.push_back('=');
@@ -74,6 +77,10 @@ std::vector<std::string> Parser::operator()(std::string input, int state) const 
         bool quoteAlreadyAdded = false;
         //covers an issue where a quotation mark gets added twice
 
+        if (c == '#') {
+            break;
+            //rest of code to be read is a comment, can skip w/o issue
+        }
         if (c == '\"') {
             //std::cout << "DEBUG quotation found" << std::endl;
             quotationCounter++;
@@ -120,7 +127,12 @@ std::vector<std::string> Parser::operator()(std::string input, int state) const 
         //std::cout << "DEBUG end loop" << std::endl;
     }
 
-    if (parsedString != "" && parsedString != " " && parsedString != "\"") {
+    if (parsedString != "" 
+        && parsedString != " " 
+        && parsedString != "\"" 
+        && parsedString != "#"
+        && parsedString != "\n"//cleaning away newlines as well
+        && parsedString != "\r") {
         //std::cout << "DEBUG pushing string |" << parsedString << "| into vector" << std::endl;
         //covers an issue where sometimes parsedString gets pushed with value " "
         output.push_back(parsedString);
@@ -130,11 +142,29 @@ std::vector<std::string> Parser::operator()(std::string input, int state) const 
     //std::cout << "DEBUG end of for loop" << std::endl;
 
     if (quotationCounter >= 3 || quotationCounter == 1) {
-        //names should have 0 or 2 quotation marks
+        //assigning values to STRINGs should have 0 or 2 quotation marks
         //otherwise it is an incorrect input
         output[2] = "BAD_NAME_FORMAT";
     }
-    //the output should not be longer than 3 or 4 strings long
+    //the output should not be longer than a few strings long
     //so we will pass by value
+    return output;
+}
+
+std::string Parser::cleanLine(std::string rawline) {
+    //adds spaces between +, -, *, = symbols
+    std::string output = "";
+    for (char c : rawline) {
+        if (c == '*' || c == '+' || c == '-' || c == '=') {
+            output += ' ';
+            output += c;
+            output += ' ';
+        }
+        else {
+            output += c;
+        }
+        //std::cout << "Output is: " << std::endl;
+    }
+    //std::cout << "Cleaned line: " << output << std::endl;
     return output;
 }

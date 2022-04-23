@@ -11,6 +11,7 @@ class Parser {
 		bool charInOperator(char c) const;
 		//bool charInSeparator(char c, char priorityDelimiter) const;
 
+		std::string cleanLine(std::string rawline);
 	protected:
 		std::vector<char> separators;
 		std::vector<char> operators;
