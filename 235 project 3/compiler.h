@@ -8,6 +8,21 @@ enum ErrorCode {
     None,
     Continue,
     Exit,
+    NoVarFound,
+};
+
+enum Action {
+    Print,
+    Modify,
+};
+
+template <typename T> class HunVar {
+    public:
+        std::string returnName() const;
+        HunVar(std::string name);
+    protected:
+        std::string name;
+        T value;
 };
 
 class Var {
@@ -44,9 +59,12 @@ class Compiler {
 
         ErrorCode interpretLine(std::vector<std::string> line);
         //takes in 1 line of code and does stuff with it
+
         ErrorCode createNewVar(std::string type, std::string name);
+        bool interactWithVar(std::string name, Action action, long long num = -1, std::string str = "");//helper
         void printError(ErrorCode code);
     private:
-        std::vector<Var> memory;
+        std::vector<StrVar> StrMemory;
+        std::vector<NumVar> NumMemory;
         std::string fileToBeRead;
 };

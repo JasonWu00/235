@@ -15,11 +15,11 @@ Var::Var(std::string name) {
 //child constructors call parent constructor
 
 NumVar::NumVar(std::string name) : Var(name) {
-
+    value = 0;//intialized to default value
 }
 
 StrVar::StrVar(std::string name) : Var(name) {
-    
+    value = "Default StrVar value";
 }
 
 long long NumVar::returnValue() const {
@@ -56,15 +56,68 @@ ErrorCode Compiler::createNewVar(std::string type, std::string name) {
     //makes new var
     if (type == "STRING") {
         StrVar myString{name};
-        memory.push_back(myString);
-        //std::cout << "Making a string var of name " << memory.back().returnName() << std::endl;
+        StrMemory.push_back(myString);
+        //std::cout << "Making a string var of name " << StrMemory.back().returnName() << std::endl;
     }
     else if (type == "NUMBER") {
         NumVar myNum{name};
-        memory.push_back(myNum);
-        //std::cout << "Making a number var of name " << memory.back().returnName() << std::endl;
+        NumMemory.push_back(myNum);
+        //std::cout << "Making a number var of name " << NumMemory.back().returnName() << std::endl;
     }
     return state;
+}
+
+bool Compiler::interactWithVar(std::string name, Action action, long long num, std::string str) {
+    bool matchingVarFound = false;
+    
+    for (NumVar myNumVar : NumMemory) {
+        if (name == myNumVar.returnName()) {
+            matchingVarFound = true;
+            std::cout << "NumVar found" << std::endl;
+            //found the number, now to assign it a value or print something
+            if (action == Action::Print) {
+                std::cout << myNumVar.returnValue() << std::endl;
+            }
+        }
+    }
+
+    if (! matchingVarFound) {
+        for (StrVar myStrVar : StrMemory) {
+            if (name == myStrVar.returnName()) {
+                matchingVarFound = true;
+                std::cout << "StrVar found" << std::endl;
+                if (action == Action::Print) {
+                    std::cout << myStrVar.returnValue() << std::endl;
+                }
+                
+            }
+        }
+    }
+    /*
+    
+    for (i = 0; i < StrMemory.size(); i++) {//iterate through memory
+        matchingVarFound = (name == StrMemory[i].returnName());
+        if (matchingVarFound) {
+            //std::cout << StrMemory[i].returnValue() << std::endl;
+            std::cout << "StrVar found" << std::endl;
+            return StrMemory[i].returnValue();
+            //return matchingVarFound;
+        }
+    }
+
+    if (! matchingVarFound) {
+        for (i = 0; i < NumMemory.size(); i++) {//iterate through memory
+            matchingVarFound = (name == NumMemory[i].returnName());
+            if (matchingVarFound) {
+                //std::cout << NumMemory[i].returnValue() << std::endl;
+                std::cout << "NumVar found" << std::endl;
+                return NumMemory[i].returnValue();
+                //return matchingVarFound;
+            }
+        }
+    }*/
+
+    return matchingVarFound;
 }
 
 ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
@@ -72,13 +125,17 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
     //takes in one line, analyzes what it is supposed to do, then calls a helper
     //types of lines: variable declaration, print statement,
     //                value assignment (with or without PEMDAS),
-    //                comments (can be ignored)
+    //                comments (can be ignored), empty line
 
     //Variable declaration and print
     //line[0] will be "STRING", "NUMBER", or "PRINT"
     //line[1] declares a variable or sends a variable or literal to print
     
     size_t lineLength = line.size();
+    if (lineLength == 0) {
+        return ErrorCode::None;
+        //empty line, skip to next line
+    }
     if (lineLength == 2) {
 
         //declaration
@@ -90,8 +147,14 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
         //print statement
         else if (line[0] == "PRINT") {
             std::cout << "Printing thing" << std::endl;
+            //check if the thing is a variable
+            //if so, call its returnValue() function
 
-            if (! isNum(line[1])) {//not a number
+            bool matchingVarFound = interactWithVar(line[1], Action::Print);
+
+            //if not, directly print as seen below
+
+            if (! isNum(line[1]) && ! matchingVarFound) {//not a number, not a variable name
                 std::string cleanedToken = "";
                 for (char c : line[1]) {
                     if (c != '\"') {
@@ -101,7 +164,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 std::cout << cleanedToken << std::endl;
             }
 
-            else {
+            else if (! matchingVarFound){//a number, but not a var name
                 std::cout << line[1] << std::endl;
             }
         }

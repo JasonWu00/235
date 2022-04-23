@@ -32,7 +32,14 @@ int main(int argc, char *argv[]) {
     //std::cout << compiler.returnFileName() << std::endl;
     //compiler.checkifParserWorks();
 
-    std::ifstream readRecords(compiler.returnFileName());
+    std::ifstream readRecords;
+    readRecords.open(compiler.returnFileName());
+    if (! readRecords) {//check if the file actually exists
+        std::cout << "The specified file does not exist" << std::endl;
+        readRecords.close();
+        return 0;
+    }
+
     std::cout << "Readstream opened to " << compiler.returnFileName() << std::endl;
     //open read stream to specified file
 
