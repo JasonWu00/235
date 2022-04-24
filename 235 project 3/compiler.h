@@ -1,55 +1,9 @@
 #pragma once
 #include "parser.h"
+#include "classes.h"
 #include <fstream>
 #include <iostream>
 #include <string>
-
-enum ErrorCode {
-    None,
-    Continue,
-    Exit,
-    NoVarFound,
-};
-
-enum Action {
-    Print,
-    Modify,
-};
-
-template <typename T> class HunVar {
-    public:
-        std::string returnName() const;
-        HunVar(std::string name);
-    protected:
-        std::string name;
-        T value;
-};
-
-class Var {
-    public:
-        std::string returnName() const;
-        Var(std::string name);
-    protected:
-        std::string name;
-};
-
-class NumVar: public Var {
-    public:
-        long long returnValue() const;
-        void updateValue(long long input);
-        NumVar(std::string name);
-    private:
-        long long value;
-};
-
-class StrVar: public Var {
-    public:
-        std::string returnValue() const;
-        void updateValue(std::string input);
-        StrVar(std::string name);
-    private:
-        std::string value;
-};
 
 class Compiler {
     public:
@@ -61,10 +15,18 @@ class Compiler {
         //takes in 1 line of code and does stuff with it
 
         ErrorCode createNewVar(std::string type, std::string name);
-        bool interactWithVar(std::string name, Action action, long long num = -1, std::string str = "");//helper
+
+        //helpers
+        VarData findTypeByName(std::string givenName);
+        void printValueByName(VarData data);
+
         void printError(ErrorCode code);
     private:
         std::vector<StrVar> StrMemory;
+        //std::vector<std::string> StrNames;
         std::vector<NumVar> NumMemory;
+        //std::vector<std::string> NumNames;
+        std::vector<std::vector<std::string>> names;
+        //[0] == str; [1] == num
         std::string fileToBeRead;
 };
