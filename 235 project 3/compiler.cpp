@@ -38,6 +38,14 @@ bool Compiler::isNum(std::string input) const {
 
 ErrorCode Compiler::createNewVar(std::string type, std::string name) {
     ErrorCode state = ErrorCode::Continue;
+
+    for (std::string keyword : reservedKeywords) {
+        if (name == keyword) {
+            return ErrorCode::NameReserved;
+            //you can't have a var named "PRINT"
+        }
+    }
+
     //makes new var
     if (type == "STRING") {
         StrVar myString{name};
@@ -172,8 +180,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
         //std::cout << "Is this a new var?" << std::endl;
         if (command == "STRING" || command == "NUMBER") {
             //std::cout << "Creating string or number" << std::endl;
-            error = createNewVar(command, name);
-            return error;
+            return createNewVar(command, name);
         }
         //std::cout << "Not a new var" << std::endl;
 
@@ -189,6 +196,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
             if (matchingVarFound) {
                 //std::cout << "print variable function broken, have this" << std::endl;
                 printValueByName(data);
+                return ErrorCode::Continue;
             }
 
             //if not a var name, directly print as seen below
@@ -209,7 +217,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
             }
 
             else if (! matchingVarFound){//a number, but not a var name
-                std::cout << line[1] << std::endl;
+                std::cout << name << std::endl;
             }
         }
     }
@@ -244,13 +252,9 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                     }
                     else if (data.type == VarType::Number) {
                         long long newNum = stol(token);
-                        std::string debugName = NumMemory[data.placeInMemory].returnName();
-                        long long debugVal = NumMemory[data.placeInMemory].returnValue();
-                        std::cout << "Debug" << std::endl;
-                        std::cout << "Name and value of var referenced: ";
-                        std::cout << debugName << " " << debugVal << std::endl;
                         NumMemory[data.placeInMemory].updateValue(newNum);
                     }
+                    return ErrorCode::Continue;
                 }
                 else if (newDataLit.type == data.type) {//both are same types but one is lit and other is var
                     //assign var referenced by data with newdata literal
@@ -260,36 +264,14 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                     else if (data.type == VarType::Number) {
                         updateNumByName(data, stol(token));
                     }
+                    return ErrorCode::Continue;
                 }
             }
 
-            //old code below
-            /*
-            if (data.type == VarType::String) {
-                std::string newVal = line[2];
-                //check if thing to right of = is string literal
-                bool isStr = isString(newVal);
-                if (isStr) {//right side is a string literal, assign a value
-                    updateStrByName(data, newVal);
-                }
-                else {//may be a string var or nothing
-                    VarData newData = findTypeByName(newVal);
-                    if (newData.type == VarType::Nothing) {
-                        //it's not a string var
-                        return ErrorCode::NotLiteralOrName;
-                    }
-                }
-            }
-            
-            else if (data.type == VarType::Number) {
-                std::string newVal = line[2];
-                if (isNum(newVal)) {//other thing is not a number
+        }
 
-                }
-            }*/
-         }
         else {
-            return ErrorCode::None;
+            return ErrorCode::TooManyTokens;
         }
     }
 

@@ -14,8 +14,15 @@ void returnError(ErrorCode code, int line) {
     std::string error = "Line ";
     error += std::to_string(line);
     error += ": ";
-    if (code == NoVarFound) {
-        error += "Variable called at this name has not been previously declared";
+    
+    if (code == ErrorCode::NotLiteralOrName) {
+        error += "One or more variable(s) called at this line cannot be found in memory";
+    }
+    else if (code == ErrorCode::NameReserved) {
+        error += "One or more variable(s) on this line uses a reserved keyword";
+    }
+    else if (code == ErrorCode::TooManyTokens) {
+        error += "This line has a number of tokens inconsistent with known code features";
     }
     else {
         error += "Unspecified error";

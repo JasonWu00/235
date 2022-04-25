@@ -8,6 +8,7 @@ enum ErrorCode {
     NoVarFound,
     NotLiteralOrName,
     NameReserved,
+    TooManyTokens,
 };
 
 enum Action {
