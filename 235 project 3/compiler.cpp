@@ -85,10 +85,21 @@ VarData Compiler::findTypeByName(std::string givenName) {
     return output;
 }
 
+std::string Compiler::removeQuotes(std::string input) {
+    std::string cleanedToken = "";
+    for (char c : input) {
+        if (c != '\"') {
+            cleanedToken += c;
+        }
+    }
+    return cleanedToken;
+}
+
 void Compiler::printValueByName(VarData data) {
     //std::cout << "print variable function broken, have this" << std::endl;
     if (data.type == VarType::String) {
-        std::cout << StrMemory[data.placeInMemory].returnValue() << std::endl;
+        std::string output = removeQuotes(StrMemory[data.placeInMemory].returnValue());
+        std::cout << output << std::endl;
     }
     else if (data.type == VarType::Number) {
         std::cout << NumMemory[data.placeInMemory].returnValue() << std::endl;
@@ -117,7 +128,7 @@ VarData Compiler::findType(std::string token) {
 }
 
 bool Compiler::isString(std::string input) const {
-    if (input[0] == '\"' && input[input.length()] == '\"') {
+    if (input[0] == '\"' && input[input.length()-1] == '\"') {
         return true;
     }
     return false;
@@ -187,17 +198,13 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 //throw an error
                 bool isLiteral = isString(name);
                 if (! isLiteral) {
+                    //std::cout << "not literal or name" << std::endl;
                     return ErrorCode::NotLiteralOrName;
                 }
 
                 //it has quotes, it is a literal
                 //print it but without quotes
-                std::string cleanedToken = "";
-                for (char c : name) {
-                    if (c != '\"') {
-                        cleanedToken += c;
-                    }
-                }
+                std::string cleanedToken = removeQuotes(name);
                 std::cout << cleanedToken << std::endl;
             }
 
@@ -209,6 +216,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
     
     else if (lineLength == 3) {//var value assignment
         if (line[1] == "=") {
+            //std::cout << "Assignment line" << std::endl;
             //is an assignment line
             //line[0] should be a var name
             std::string name = line[0];
@@ -217,6 +225,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
             //data holds info on the location of the variable desired and its type
 
             if (data.type != VarType::Nothing) {//is a recognized data type
+                //std::cout << "Recognized data type" << std::endl;
                 std::string token = line[2];
 
                 VarData newDataVar = findTypeByName(token);
@@ -224,8 +233,10 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 VarData newDataLit = findType(token);
                 //this tells us if token is a string, number, or other literal
 
-                if (newDataVar.type == data.type) {//both are string variables
+                if (newDataVar.type == data.type) {//both are same type variables
+                    std::cout << "In assignment line" << std::endl;
                     //assign var referenced by data with value from var referenced by newdata
+
                     //due to issue with dynamically returning value of string or number in one func
                     //more if-else statements needed
                     if (data.type == VarType::String) {
@@ -233,12 +244,22 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                     }
                     else if (data.type == VarType::Number) {
                         long long newNum = stol(token);
+                        std::string debugName = NumMemory[data.placeInMemory].returnName();
+                        long long debugVal = NumMemory[data.placeInMemory].returnValue();
+                        std::cout << "Debug" << std::endl;
+                        std::cout << "Name and value of var referenced: ";
+                        std::cout << debugName << " " << debugVal << std::endl;
                         NumMemory[data.placeInMemory].updateValue(newNum);
                     }
                 }
-                else if (newDataLit.type == data.type) {//both are strings but one is lit and other is var
+                else if (newDataLit.type == data.type) {//both are same types but one is lit and other is var
                     //assign var referenced by data with newdata literal
-                    updateStrByName(data, token);
+                    if (data.type == VarType::String) {
+                        updateStrByName(data, token);
+                    }
+                    else if (data.type == VarType::Number) {
+                        updateNumByName(data, stol(token));
+                    }
                 }
             }
 

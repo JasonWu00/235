@@ -23,6 +23,7 @@ class Compiler {
         bool isString(std::string input) const;
         bool isNum(std::string input) const;
         VarData findType(std::string token);
+        std::string removeQuotes(std::string input);
 
         void printError(ErrorCode code);
     private:

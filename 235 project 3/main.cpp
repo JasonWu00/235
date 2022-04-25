@@ -12,10 +12,13 @@ void printVector(std::vector<std::string> input) {
 
 void returnError(ErrorCode code, int line) {
     std::string error = "Line ";
-    error += line;
+    error += std::to_string(line);
     error += ": ";
     if (code == NoVarFound) {
         error += "Variable called at this name has not been previously declared";
+    }
+    else {
+        error += "Unspecified error";
     }
 
     std::cout << error << std::endl;
