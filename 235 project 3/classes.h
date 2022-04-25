@@ -6,6 +6,8 @@ enum ErrorCode {
     Continue,
     Exit,
     NoVarFound,
+    NotLiteralOrName,
+    NameReserved,
 };
 
 enum Action {

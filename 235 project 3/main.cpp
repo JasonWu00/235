@@ -10,6 +10,17 @@ void printVector(std::vector<std::string> input) {
     std::cout << std::endl;
 }
 
+void returnError(ErrorCode code, int line) {
+    std::string error = "Line ";
+    error += line;
+    error += ": ";
+    if (code == NoVarFound) {
+        error += "Variable called at this name has not been previously declared";
+    }
+
+    std::cout << error << std::endl;
+}
+
 int main(int argc, char *argv[]) {
     //argv[1] should contain name of file to be interpreted
     //unless none is provided, in which case argc==1, return error code
@@ -45,8 +56,10 @@ int main(int argc, char *argv[]) {
 
     std::string line = "";//a line of code to be read
     ErrorCode isDone = ErrorCode::Continue;
+    int lineNumber = 0;
     
     while (getline(readRecords, line)) {
+        lineNumber++;
         //std::cout << "One line read" << std::endl;
         //std::cout << line << std::endl;
 
@@ -58,8 +71,13 @@ int main(int argc, char *argv[]) {
         //printVector(parsedLine);
 
         //send line to compiler to be interpreted
-        compiler.interpretLine(parsedLine);
-        
+        isDone = compiler.interpretLine(parsedLine);
+        if (isDone != ErrorCode::Continue) {
+            //an error has been encountered
+            //report error to console and then break out of while loop
+            returnError(isDone, lineNumber);
+            break;
+        }
     }
 
     /*
