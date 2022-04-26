@@ -39,6 +39,11 @@ bool Compiler::isNum(std::string input) const {
 ErrorCode Compiler::createNewVar(std::string type, std::string name) {
     ErrorCode state = ErrorCode::Continue;
 
+    if (isNum(name)) {
+        return ErrorCode::NameReserved;
+        //you can't have a var named 12
+    }
+
     for (std::string keyword : reservedKeywords) {
         if (name == keyword) {
             return ErrorCode::NameReserved;
@@ -51,9 +56,8 @@ ErrorCode Compiler::createNewVar(std::string type, std::string name) {
         StrVar myString{name};
         StrMemory.push_back(myString);
         //StrNames.push_back(name);
-        names[0].push_back(name);
-        //magic number will have to be replaced with a variable in the future
-        //kept as is right now due to a lack of time
+        names[strNameIndex].push_back(name);
+        //replaced magic number with a static const declared at initialization
 
         //std::cout << "Making a string var of name " << StrMemory.back().returnName() << std::endl;
     }
@@ -61,7 +65,7 @@ ErrorCode Compiler::createNewVar(std::string type, std::string name) {
         NumVar myNum{name};
         NumMemory.push_back(myNum);
         //NumNames.push_back(name);
-        names[1].push_back(name);
+        names[numNameIndex].push_back(name);
         //std::cout << "Making a number var of name " << NumMemory.back().returnName() << std::endl;
     }
     return state;
@@ -140,6 +144,29 @@ bool Compiler::isString(std::string input) const {
         return true;
     }
     return false;
+}
+
+long long Compiler::pemdas(std::vector<std::string> expression) {
+    long long output = 0;
+    //takes in an expression as a vector
+    //and evaluates its value
+
+    //step 0: check if it is a legitimate expression.
+    //each number must be flanked by operators (except first and last)
+    //and each operator must be flanked by numbers.
+
+    //step 1: replace all var names with literal values.
+    //throw error if quote or unrecognized varname detected.
+
+    //step 2: find every instance of * and replace it,
+    //the number before, and the number after with one token
+    //containing the result of multiplication
+
+    //step 3: do the same with + and -
+
+    //step 4: cast singular remaining str as long and parse into output.
+    //step 5:
+    return output;
 }
 
 //helper functions end here
@@ -248,11 +275,12 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                     //due to issue with dynamically returning value of string or number in one func
                     //more if-else statements needed
                     if (data.type == VarType::String) {
-                        StrMemory[data.placeInMemory].updateValue(token);
+                        std::string newStr = StrMemory[newDataVar.placeInMemory].returnValue();
+                        updateStrByName(data, newStr);
                     }
                     else if (data.type == VarType::Number) {
-                        long long newNum = stol(token);
-                        NumMemory[data.placeInMemory].updateValue(newNum);
+                        long long newNum = NumMemory[newDataVar.placeInMemory].returnValue();
+                        updateNumByName(data, newNum);
                     }
                     return ErrorCode::Continue;
                 }
@@ -268,10 +296,42 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 }
             }
 
+            else {
+                return ErrorCode::NotRecognizedName;
+            }
+
         }
 
         else {
             return ErrorCode::TooManyTokens;
+        }
+    }
+
+    else if (lineLength >= 4) {
+        //number value assignment with pemdas
+        //or print pemdas expression
+        //std::cout << "Line length > 4, probably an expression" << std::endl;
+        
+        if (line[0] == "PRINT") {
+            std::vector<std::string> expression;
+            for (int i = 1; i < line.size(); i++) {
+                expression.push_back(line[i]);
+            }
+            std::cout << pemdas(expression) << std::endl;
+            return ErrorCode::Continue;
+        }
+
+        else if (line[1] == "=") {
+            //check if line[0] is a number var
+            //if not, throw error
+            //if yes, continue
+            VarData numData = findTypeByName(line[0]);
+            if (numData.type != VarType::Number) {
+                return ErrorCode::NotNumber;
+            }
+            else {
+                std::cout << "number value assignment placeholder" << std::endl;
+            }
         }
     }
 

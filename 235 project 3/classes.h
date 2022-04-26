@@ -6,14 +6,13 @@ enum ErrorCode {
     Continue,
     Exit,
     NoVarFound,
+    NotRecognizedName,
     NotLiteralOrName,
+    NotRecognizedType,
+    NotNumber,
+    NotString,
     NameReserved,
     TooManyTokens,
-};
-
-enum Action {
-    Print,
-    Modify,
 };
 
 enum VarType {

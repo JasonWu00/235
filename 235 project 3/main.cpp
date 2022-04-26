@@ -24,6 +24,9 @@ void returnError(ErrorCode code, int line) {
     else if (code == ErrorCode::TooManyTokens) {
         error += "This line has a number of tokens inconsistent with known code features";
     }
+    else if (code == ErrorCode::NotNumber) {
+        error += "Type of variable on left does not match expression on right (NUMBER)";
+    }
     else {
         error += "Unspecified error";
     }

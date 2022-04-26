@@ -1,5 +1,7 @@
 #include "classes.h"
 
+//contains code for lesser classes and enums.
+
 std::string Var::returnName() const {
     return name;
 }
