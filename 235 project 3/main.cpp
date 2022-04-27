@@ -25,7 +25,7 @@ void returnError(ErrorCode code, int line) {
         error += "This line has a number of tokens inconsistent with known code features";
     }
     else if (code == ErrorCode::NotNumber) {
-        error += "Type of variable on left does not match expression on right (NUMBER)";
+        error += "Type of one or more variables incompatible with = (requires NUMBER or literal)";
     }
     else {
         error += "Unspecified error";

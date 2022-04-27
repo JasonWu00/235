@@ -18,8 +18,11 @@ class Compiler {
 
         //helpers
         ErrorCode createNewVar(std::string type, std::string name);
-        VarData findTypeByName(std::string givenName);
-        void printValueByName(VarData data);
+        VarData findDataByName(std::string givenName) const;
+        void printValueByName(VarData data) const;
+
+        long long returnNumByName(VarData data) const;
+        std::string returnStrByName(VarData data) const;
 
         void updateStrByName(VarData data, std::string newVal);
         void updateNumByName(VarData data, long long newVal);
@@ -27,9 +30,11 @@ class Compiler {
         bool isString(std::string input) const;
         bool isNum(std::string input) const;
 
-        VarData findType(std::string token);
-        std::string removeQuotes(std::string input);
-        long long pemdas(std::vector<std::string> expression);
+        VarData findType(std::string token) const;
+        std::string removeQuotes(std::string input) const;
+
+        long long pemdas(std::vector<std::string> expression) const;
+        ErrorCode validateExp(std::vector<std::string> expression) const;
 
         void printError(ErrorCode code);
     private:

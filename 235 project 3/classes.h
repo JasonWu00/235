@@ -5,6 +5,7 @@ enum ErrorCode {
     None,
     Continue,
     Exit,
+    IncorrectOperator,
     NoVarFound,
     NotRecognizedName,
     NotLiteralOrName,
@@ -13,6 +14,7 @@ enum ErrorCode {
     NotString,
     NameReserved,
     TooManyTokens,
+    TooManyTokensInExp,
 };
 
 enum VarType {
