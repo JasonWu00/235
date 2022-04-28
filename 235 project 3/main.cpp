@@ -49,7 +49,7 @@ void returnError(ErrorCode code, int line) {
         error += "Unspecified error";
     }
 
-    std::cout << error;// << std::endl;
+    std::cout << std::endl << error << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -103,6 +103,7 @@ int main(int argc, char *argv[]) {
 
         //send line to compiler to be interpreted
         isDone = compiler.interpretLine(parsedLine);
+        //std::cout << std::endl;
         if (isDone != ErrorCode::Continue) {
             //an error has been encountered
             //report error to console and then break out of while loop

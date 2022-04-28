@@ -61,10 +61,11 @@ ErrorCode Compiler::createNewVar(std::string type, std::string name) {
 
     //makes new var
     if (type == "STRING") {
-        StrVar myString{name};
+        std::string quoteless = removeQuotes(name);
+        StrVar myString{quoteless};
         StrMemory.push_back(myString);
         //StrNames.push_back(name);
-        names[strNameIndex].push_back(name);
+        names[strNameIndex].push_back(quoteless);
         //replaced magic number with a static const declared at initialization
 
         //std::cout << "Making a string var of name " << StrMemory.back().returnName() << std::endl;
@@ -127,32 +128,62 @@ void Compiler::printValueByName(VarData data) const {
     }
 }
 
+void printStrPerChar(std::string input) {
+    //local debug function for seeing if newline chars are implemented properly
+    for (char c : input) {
+        if (c != '\n') {
+            std::cout << c << "|";
+        }
+        else {
+            std::cout << "NL" << "|";
+        }
+    }
+    std::cout << std::endl;
+}
+
 std::string Compiler::replaceNewlines(std::string input) const {
+    //Helper function intended to clear out bad newlines '\\n'
+    //Obsoleted due to implementation of a simpler cleaning functionality
+    //in the parser
+
     std::string output = input;
     bool newlinesReplaced = false;
+    std::vector<int> newlineLocations;
     std::string badNewline = "\\n";
+
+    std::cout << "before replacing" << std::endl;
+    //printStrPerChar(output);
+    std::cout << std::endl;
     
     while (! newlinesReplaced) {
         size_t newlinePlace = output.find(badNewline);
         if (newlinePlace != std::string::npos) {//there is >=1 instance of a bad newline
             output.replace(newlinePlace, newlinePlace + badNewline.size()-1, "\n");
+            newlineLocations.push_back(newlinePlace);
         }
         else {
             newlinesReplaced = true;
         }
     }
 
-    if (output[1] == 'n') {
-        output.erase(1, 1);
-        //deals with an issue where sometimes there's a random n left behind
-    }
+    std::cout << "after replacing" << std::endl;
+    //printStrPerChar(output);
+    std::cout << std::endl;
+
+    /*
+    for (int i : newlineLocations) {
+        if (output[i] == 'n') {
+            output.erase(i, 1);
+            //deals with an issue where sometimes there's a random n left at the start due to bad cropping
+        }
+    }*/
 
     return output;
 }
 
 void Compiler::updateStrByName(VarData data, std::string newVal) {
-    std::string cleanedStr = replaceNewlines(newVal);
-    StrMemory[data.placeInMemory].updateValue(cleanedStr);
+    //std::string cleanedStr = replaceNewlines(newVal);
+    StrMemory[data.placeInMemory].updateValue(newVal);
 }
 
 void Compiler::updateNumByName(VarData data, long long newVal) {
@@ -399,8 +430,9 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 //it has quotes, it is a literal
                 //print it but without quotes
                 std::string cleanedToken = removeQuotes(name);
-                std::string fixedNewlines = replaceNewlines(cleanedToken);
-                std::cout << fixedNewlines;// << std::endl;
+                //std::string fixedNewlines = replaceNewlines(cleanedToken);
+                //printStrPerChar(cleanedToken);
+                std::cout << cleanedToken;// << std::endl;
             }
 
             else if (! matchingVarFound){//a number, but not a var name
