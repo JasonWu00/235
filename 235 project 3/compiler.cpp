@@ -19,6 +19,7 @@ Compiler::Compiler(std::string filename) {
     reservedKeywords.push_back("+");
     reservedKeywords.push_back("-");
     reservedKeywords.push_back("*");
+    reservedKeywords.push_back("#");
 }
 
 std::string Compiler::returnFileName() const {
@@ -42,6 +43,13 @@ ErrorCode Compiler::createNewVar(std::string type, std::string name) {
     if (isNum(name)) {
         return ErrorCode::NameReserved;
         //you can't have a var named 12
+    }
+
+    std::string first = "";
+    first += name[0];
+    if (isNum(first)) {
+        //std::cout << "badname" << std::endl;
+        return ErrorCode::BadName;
     }
 
     for (std::string keyword : reservedKeywords) {
@@ -110,16 +118,41 @@ std::string Compiler::removeQuotes(std::string input) const {
 void Compiler::printValueByName(VarData data) const {
     //std::cout << "print variable function broken, have this" << std::endl;
     if (data.type == VarType::String) {
-        std::string output = returnStrByName(data);
-        std::cout << output << std::endl;
+        std::string str = returnStrByName(data);
+        std::string cleaned = removeQuotes(str);
+        std::cout << cleaned << std::endl;
     }
     else if (data.type == VarType::Number) {
-        std::cout << returnNumByName(data) << std::endl;
+        std::cout << returnNumByName(data);// << std::endl;
     }
 }
 
+std::string Compiler::replaceNewlines(std::string input) const {
+    std::string output = input;
+    bool newlinesReplaced = false;
+    std::string badNewline = "\\n";
+    
+    while (! newlinesReplaced) {
+        size_t newlinePlace = output.find(badNewline);
+        if (newlinePlace != std::string::npos) {//there is >=1 instance of a bad newline
+            output.replace(newlinePlace, newlinePlace + badNewline.size()-1, "\n");
+        }
+        else {
+            newlinesReplaced = true;
+        }
+    }
+
+    if (output[1] == 'n') {
+        output.erase(1, 1);
+        //deals with an issue where sometimes there's a random n left behind
+    }
+
+    return output;
+}
+
 void Compiler::updateStrByName(VarData data, std::string newVal) {
-    StrMemory[data.placeInMemory].updateValue(newVal);
+    std::string cleanedStr = replaceNewlines(newVal);
+    StrMemory[data.placeInMemory].updateValue(cleanedStr);
 }
 
 void Compiler::updateNumByName(VarData data, long long newVal) {
@@ -176,7 +209,7 @@ ErrorCode Compiler::validateExp(std::vector<std::string> expression) const {
         if (! isNum(myExp[i])) {
             VarData data = findDataByName(myExp[i]);
             if (data.type != VarType::Number) {
-                std::cout << "Not Number" << std::endl;
+                //std::cout << "Not Number" << std::endl;
                 return ErrorCode::NotNumber;
             }
             else {
@@ -193,7 +226,7 @@ ErrorCode Compiler::validateExp(std::vector<std::string> expression) const {
 
     for (int i = 1; i < myExp.size(); i+=2) {
         if (! (isNum(myExp[i-1]) && isNum(myExp[i+1]))) {//not nums
-            std::cout << "Not number 2" << std::endl;
+            //std::cout << "Not number 2" << std::endl;
             return ErrorCode::NotNumber;
         }
 
@@ -206,7 +239,7 @@ ErrorCode Compiler::validateExp(std::vector<std::string> expression) const {
         }
 
         if (! badOp) {
-            std::cout << "Bad operator" << std::endl;
+            //std::cout << "Bad operator" << std::endl;
             return ErrorCode::IncorrectOperator;
         }
     }
@@ -304,6 +337,13 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
     //line[1] onwards will be the expression
     
     size_t lineLength = line.size();
+
+    for (int i = 0; i < lineLength; i++) {
+        if (line[i] == "BAD_NAME_FORMAT") {
+            return ErrorCode::BadQuoteFormatting;
+        }
+    }
+
     if (lineLength == 0) {
         return ErrorCode::Continue;
         //empty line or comment line, skip to next line
@@ -318,6 +358,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
     if (lineLength == 2) {//var declaration or print
         std::string command = line[0];
         std::string name = line[1];
+        //std::cout << "line length 2" << std::endl;
         //either a declaration "STRING/NUMBER var"
         //or a print "PRINT stuffhere"
 
@@ -330,7 +371,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
         //std::cout << "Not a new var" << std::endl;
 
         //print statement
-        if (command == "PRINT") {
+        else if (command == "PRINT") {
             //std::cout << "Printing thing" << std::endl;
             //check if the thing is a variable
             //if so, call its returnValue() function
@@ -358,13 +399,18 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 //it has quotes, it is a literal
                 //print it but without quotes
                 std::string cleanedToken = removeQuotes(name);
-                std::cout << cleanedToken << std::endl;
+                std::string fixedNewlines = replaceNewlines(cleanedToken);
+                std::cout << fixedNewlines;// << std::endl;
             }
 
             else if (! matchingVarFound){//a number, but not a var name
-                std::cout << name << std::endl;
+                std::cout << name;// << std::endl;
                 return ErrorCode::Continue;
             }
+        }
+
+        else {
+            return ErrorCode::UnknownVarType;
         }
     }
     
@@ -387,8 +433,12 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
                 VarData newDataLit = findType(token);
                 //this tells us if token is a string, number, or other literal
 
+                if (data.type != newDataLit.type && data.type != newDataVar.type) {
+                    return ErrorCode::BadVarLitCombo;
+                }
+
                 if (newDataVar.type == data.type) {//both are same type variables
-                    std::cout << "In assignment line" << std::endl;
+                    //std::cout << "In assignment line" << std::endl;
                     //assign var referenced by data with value from var referenced by newdata
 
                     //due to issue with dynamically returning value of string or number in one func
@@ -441,7 +491,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
 
             ErrorCode correctExp = validateExp(expression);
             if (correctExp != ErrorCode::Continue) {
-                std::cout << "incorrectExp" << std::endl;
+                //std::cout << "incorrectExp" << std::endl;
                 return correctExp;
             }
 
@@ -471,7 +521,7 @@ ErrorCode Compiler::interpretLine(std::vector<std::string> line) {
 
                 ErrorCode correctExp = validateExp(expression);
                 if (correctExp != ErrorCode::Continue) {//check if pemdas function is legal
-                    std::cout << "incorrectExp" << std::endl;
+                    //std::cout << "incorrectExp" << std::endl;
                     return correctExp;
                 }
 

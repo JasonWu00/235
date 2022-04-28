@@ -3,6 +3,9 @@
 
 enum ErrorCode {
     None,
+    BadQuoteFormatting,
+    BadVarLitCombo,
+    BadName,
     Continue,
     Exit,
     IncorrectOperator,
@@ -15,6 +18,7 @@ enum ErrorCode {
     NameReserved,
     TooManyTokens,
     TooManyTokensInExp,
+    UnknownVarType,
 };
 
 enum VarType {

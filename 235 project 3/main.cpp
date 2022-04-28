@@ -15,7 +15,7 @@ void returnError(ErrorCode code, int line) {
     error += std::to_string(line);
     error += ": ";
     
-    if (code == ErrorCode::NotLiteralOrName) {
+    if (code == ErrorCode::NotLiteralOrName || code == ErrorCode::NotRecognizedName) {
         error += "One or more variable(s) called at this line cannot be found in memory";
     }
     else if (code == ErrorCode::NameReserved) {
@@ -24,14 +24,32 @@ void returnError(ErrorCode code, int line) {
     else if (code == ErrorCode::TooManyTokens) {
         error += "This line has a number of tokens inconsistent with known code features";
     }
+    else if (code == ErrorCode::TooManyTokensInExp) {
+        error += "This PEMDAS expression has an inconsistent number of tokens";
+    }
     else if (code == ErrorCode::NotNumber) {
-        error += "Type of one or more variables incompatible with = (requires NUMBER or literal)";
+        error += "One or more vars or literals incompatible with = (no STRINGs or literals on left side allowed)";
+    }
+    else if (code == ErrorCode::IncorrectOperator) {
+        error += "One or more operators in this PEMDAS expression is unsupported";
+    }
+    else if (code == ErrorCode::BadQuoteFormatting) {
+        error += "Too many or not enough quotation marks (2 marks required to declare a string literal)";
+    }
+    else if (code == ErrorCode::UnknownVarType) {
+        error += "Unknown variable type declared on this line (not STRING or NUMBER)";
+    }
+    else if (code == ErrorCode::BadName) {
+        error += "Name of var declared violates naming convention";
+    }
+    else if (code == ErrorCode::BadVarLitCombo) {
+        error += "Var and literal types do not match";
     }
     else {
         error += "Unspecified error";
     }
 
-    std::cout << error << std::endl;
+    std::cout << error;// << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -43,12 +61,12 @@ int main(int argc, char *argv[]) {
     }
 
     std::string filename = argv[1];
-    /*
+
     size_t extension = filename.find(".hun");
     if (extension == -1) {
         std::cout << "File does not have correct extension" << std::endl;
         return 0;
-    }*/
+    }
 
     Compiler compiler{argv[1]};
     Parser parser;
@@ -64,7 +82,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    std::cout << "Readstream opened to " << compiler.returnFileName() << std::endl;
+    //std::cout << "Readstream opened to " << compiler.returnFileName() << std::endl;
     //open read stream to specified file
 
     std::string line = "";//a line of code to be read
@@ -93,15 +111,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /*
-    while (getline(std::cin, line)) {
-        //std::cout << "One line read" << std::endl;
-        std::vector<std::string> parsedLine = parser(parser.cleanLine(line));
-        //std::vector<std::string> parsedLine = parser(line);
-        //line has been cleaned and parsed into a vector
-        //testing: print the vector
-        printVector(parsedLine);
-    }*/
+    //std::cout << std::endl;
 
     readRecords.close();
 

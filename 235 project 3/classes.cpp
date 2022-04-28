@@ -21,7 +21,7 @@ NumVar::NumVar(std::string name) : Var(name) {
 }
 
 StrVar::StrVar(std::string name) : Var(name) {
-    value = "Default StrVar value";
+    value = "";
 }
 
 long long NumVar::returnValue() const {

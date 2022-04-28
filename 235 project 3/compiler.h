@@ -32,6 +32,7 @@ class Compiler {
 
         VarData findType(std::string token) const;
         std::string removeQuotes(std::string input) const;
+        std::string replaceNewlines(std::string input) const;
 
         long long pemdas(std::vector<std::string> expression) const;
         ErrorCode validateExp(std::vector<std::string> expression) const;
