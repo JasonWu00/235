@@ -32,4 +32,4 @@ std::string HunPolynomial::toString() {
         output += " ";
     }
     return output;
-}
+} 
