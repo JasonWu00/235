@@ -154,7 +154,7 @@ HunPolynomial HunPolynomial::operator * (const HunPolynomial& otherPoly) {
     std::vector<int> otherValue = otherPoly.returnValue();
 
     //total size of outputVec should be = to otherValue.size() + value.size()
-    int highestPower = otherValue.size() + value.size();
+    int highestPower = otherValue.size() + value.size() - 1;
     for (int i = 0; i < highestPower; i++) {
         outputVec.insert(outputVec.begin(), 0);
     }
@@ -169,7 +169,7 @@ HunPolynomial HunPolynomial::operator * (const HunPolynomial& otherPoly) {
         //for each element of value
         for (int j = 0; j < otherValue.size(); j++) {
             int sum = value[i] * otherValue[j];
-            int totalPower = i + j + 1;
+            int totalPower = i + j;
             outputVec[totalPower] += sum;
         }
     }
