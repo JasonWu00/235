@@ -4,18 +4,20 @@
 int main()
 {
 	HunPolynomial defPol;
+	std::cout << defPol << std::endl;
 
 	// Printing tests. Make sure your output matches the expected output EXACTLY
 	defPol.Set({ 1, 15, -1, 20 });
-	std::cout << defPol.toString() << std::endl;
-	//std::cout << defPol << std::endl;
-	//std::cout << "x^3 + 15*x^2 - x + 20  <= that is what you should see above exactly\n\n";
+	//std::cout << defPol.toString() << std::endl;
+	std::cout << defPol << std::endl;
+	std::cout << "x^3 + 15*x^2 - x + 20  <= that is what you should see above exactly\n\n";
 
 	defPol.Set({ -1, 0, 1 });
-	//std::cout << defPol <<std::endl;
-	//std::cout << "- x^2 + 1  <= that is what you should see above exactly\n\n";
+	
+	std::cout << defPol <<std::endl;
+	//std::cout << defPol.toString() << std::endl;
+	std::cout << "- x^2 + 1  <= that is what you should see above exactly\n\n";
 
-	/*
 	// Testing operator()
 	std::cout << "The value is " << defPol(-2.5) << ". The correct value is -5.25\n\n";
 
@@ -24,6 +26,8 @@ int main()
 	HunPolynomial Y{ { 5, 3, -1, 0 } };
 	HunPolynomial Result;
 	HunPolynomial Empty; // that would be an empty polinomial
+
+	std::cout << "Addition testing\n" << std::endl;
 
 	Result = X + Y;
 	std::cout << Result << std::endl;
@@ -45,6 +49,8 @@ int main()
 	Result = Y + Z;
 	std::cout << Result << std::endl;
 	std::cout << "- x^2 + x  <= that is what you should see above exactly\n\n";
+	
+	std::cout << "Subtraction testing\n" << std::endl;
 
 	// Testing subtraction
 	Result = X - Y;
@@ -62,6 +68,8 @@ int main()
 	Result = Empty - Y;
 	std::cout << Result << std::endl;
 	std::cout << "- 5*x^3 - 3*x^2 + x  <= that is what you should see above exactly\n\n";
+
+	std::cout << "Multiplication testing\n" << std::endl;
 
 	// Testing multiplication
 	HunPolynomial A{ { 2, 0, 0, 0, 1, 6 } };
@@ -82,6 +90,7 @@ int main()
 	Result = Empty * A;
 	std::cout << Result << std::endl;
 	std::cout << "Above should be an empty line or any other indication of empty polinomial\n\n";
+	/*
 	*/
 	return 0;
 }
