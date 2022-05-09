@@ -5,6 +5,8 @@ int main()
 {
 	HunPolynomial defPol;
 	std::cout << defPol << std::endl;
+	defPol.Set({0, 0, 3, 2, 1, 0});
+	std::cout << defPol << std::endl;
 
 	// Printing tests. Make sure your output matches the expected output EXACTLY
 	defPol.Set({ 1, 15, -1, 20 });
@@ -74,6 +76,8 @@ int main()
 	// Testing multiplication
 	HunPolynomial A{ { 2, 0, 0, 0, 1, 6 } };
 	HunPolynomial B{ { 1, -4, 0 } };
+	HunPolynomial C{ {1, 2, 3, 4} };
+	HunPolynomial D{ {-1, -2, -3, -4} };
 
 	Result = A * B;
 	std::cout << Result << std::endl;
@@ -90,6 +94,32 @@ int main()
 	Result = Empty * A;
 	std::cout << Result << std::endl;
 	std::cout << "Above should be an empty line or any other indication of empty polinomial\n\n";
+
+	std::cout << "Misc testing\n" << std::endl;
+
+	Result = Empty * Empty;
+	std::cout << Result << std::endl;
+	std::cout << "Above should be an empty line or any other indication of empty polinomial\n\n";
+
+	Result = Empty + Empty;
+	std::cout << Result << std::endl;
+	std::cout << "Above should be an empty line or any other indication of empty polinomial\n\n";
+
+	Result = Empty - Empty;
+	std::cout << Result << std::endl;
+	std::cout << "Above should be an empty line or any other indication of empty polinomial\n\n";
+
+	Result = C + D;
+	std::cout << Result << std::endl;
+	std::cout << "Above should be an empty line or any other indication of empty polinomial\n\n";
+
+	Result = C - D;
+	std::cout << Result << std::endl;
+
+	HunPolynomial E{{1, 1, 1, 1, 1}};
+	HunPolynomial F{{-1, -1, -1, -1, -1}};
+	std::cout << E << std::endl;
+	std::cout << F << std::endl;
 	/*
 	*/
 	return 0;

@@ -15,7 +15,7 @@ void HunPolynomial::Set(std::vector<int> setValue) {
 std::string HunPolynomial::toString() const {
     std::string output = "";
     if (value.empty()) {
-        return "0";
+        return "";
     }
     int monomialCount = 0;
 
@@ -52,7 +52,7 @@ std::string HunPolynomial::toString() const {
             }
             output += "x";
             if (power != 1) {
-                output += "*";
+                output += "^";
                 output += std::to_string(power);
             }
         }
@@ -63,6 +63,7 @@ std::string HunPolynomial::toString() const {
 
         output += " ";
     }
+
     return output;
 }
 
@@ -70,7 +71,8 @@ float HunPolynomial::operator () (float xValue) const {
     float yValue = 0.0;
     for (int i = 0; i < value.size(); i++) {
         int coefficient = value[i];
-        yValue += coefficient * std::pow(xValue, value.size() - i - 1);
+        int power = value.size() - i - 1;
+        yValue += coefficient * std::pow(xValue, power);
         //std::cout << yValue << std::endl;
     }
     return yValue;
@@ -84,13 +86,13 @@ std::vector<int> HunPolynomial::returnValue() const {
     return value;
 }
 
-std::vector<int> HunPolynomial::returnPreparedValue(int otherValueSize) {
+std::vector<int> HunPolynomial::returnPreparedValue(int otherValueSize) const{
     std::vector<int> outputVec;
-    int size = std::max(getSize(), otherValueSize);
+    int largerSize = std::max(getSize(), otherValueSize);
 
     outputVec = value;
 
-    if (size == otherValueSize) {//other value is bigger
+    if (largerSize == otherValueSize) {//other value is bigger
         int difference = otherValueSize - getSize();
         for (int i = 0; i < difference; i++) {//accounting for leading zero monomials
             outputVec.insert(outputVec.begin(), 0);
@@ -134,7 +136,7 @@ HunPolynomial HunPolynomial::operator - (const HunPolynomial& otherPoly) {
     std::vector<int> outputVec = returnPreparedValue(otherPoly.getSize());
     //initiates outputVec with appropriate leading zeros via helper
 
-    //now go backwards from the end of the array to add in value of other poly
+    //now go backwards from the end of the array to subtract value of other poly
     std::vector<int> otherValue = otherPoly.returnValue();
 
     for (int i = otherValue.size() - 1; i >= 0; i--) {

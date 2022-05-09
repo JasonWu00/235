@@ -10,7 +10,9 @@ class HunPolynomial {
         HunPolynomial();
         HunPolynomial(std::vector<int> givenValue);
         void Set(std::vector<int> setValue);
-        std::string toString() const;//helper function
+
+        //helpers
+        std::string toString() const;
         int getSize() const;
         std::vector<int> returnValue() const;
 
@@ -22,6 +24,6 @@ class HunPolynomial {
         friend std::ostream& operator << (std::ostream& outputStream, const HunPolynomial& poly);
 
     protected:
-        std::vector<int> returnPreparedValue(int otherValueSize);
+        std::vector<int> returnPreparedValue(int otherValueSize) const;
         std::vector<int> value;
 };
